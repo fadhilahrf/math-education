@@ -1,0 +1,45 @@
+<toasts></toasts>
+<div class="row">
+    <div class="col">
+        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+            <input type="radio" class="btn-check" name="editorModeToggle" id="editorModeToggle1" [checked]="isEditorMode" (click)="editorModeToggle(true)">
+            <label class="btn btn-outline-primary" for="editorModeToggle1">Editor</label>
+          
+            <input type="radio" class="btn-check" name="editorModeToggle" id="editorModeToggle2" [checked]="!isEditorMode" (click)="editorModeToggle(false)">
+            <label class="btn btn-outline-primary" for="editorModeToggle2">Raw</label>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col-6">
+        @if (isEditorMode) {
+            <div class="NgxEditor__Wrapper">
+                <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+                <ngx-editor [editor]="editor" [(ngModel)]="content"
+                [placeholder]="'Type here...'"
+                (ngModelChange)="render()"
+                ></ngx-editor>
+            </div>
+        } @else {
+            <textarea  
+                cdkTextareaAutosize
+                cdkAutosizeMinRows="3" 
+                type="textarea" 
+                class="raw-input" 
+                placeholder="Type here..." 
+                [(ngModel)]="content" 
+                (ngModelChange)="render()">
+            </textarea>
+        }
+    </div>
+    <div class="col-6 rendered-box">
+        <div #mathContent>
+        </div>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col d-flex justify-content-end">
+        <button class="btn btn-secondary mx-2" (click)="previousState()">Back</button>
+        <button class="btn btn-primary" (click)="save()">Save Content</button>
+    </div>
+</div>

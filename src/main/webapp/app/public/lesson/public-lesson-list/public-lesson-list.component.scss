@@ -1,0 +1,12 @@
+@import 'bootswatch/dist/zephyr/variables';
+
+.card.lesson-item {
+    color: black;
+}
+
+.card.lesson-item:hover {
+    transform: scale(1.05) rotate(1deg);
+    cursor: pointer;
+    background: $info;
+    color: white;
+}

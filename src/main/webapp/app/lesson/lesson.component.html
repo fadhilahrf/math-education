@@ -1,0 +1,15 @@
+<textarea type="textarea" [(ngModel)]="html" rows="4" cols="50"></textarea>
+<!-- <div class="NgxEditor__Wrapper">
+    <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+    <ngx-editor [editor]="editor" [(ngModel)]="html"
+    [placeholder]="'Type here...'"
+    (ngModelChange)="render()"
+    ></ngx-editor>
+  </div> -->
+<button class="btn btn-primary" (click)="render()" >render</button>
+<div #mathContent>
+</div>
+<!-- <div>
+    <h2>Rendered Output:</h2>
+    <div [innerHTML]="html"></div>
+</div> -->

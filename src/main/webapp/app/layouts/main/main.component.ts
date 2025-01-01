@@ -5,13 +5,15 @@ import { AccountService } from 'app/core/auth/account.service';
 import { AppPageTitleStrategy } from 'app/app-page-title-strategy';
 import FooterComponent from '../footer/footer.component';
 import PageRibbonComponent from '../profiles/page-ribbon.component';
+import HasAnyAuthorityDirective from 'app/shared/auth/has-any-authority.directive';
 
 @Component({
   selector: 'jhi-main',
   standalone: true,
   templateUrl: './main.component.html',
+  styleUrl: './main.component.scss',
   providers: [AppPageTitleStrategy],
-  imports: [RouterOutlet, FooterComponent, PageRibbonComponent],
+  imports: [RouterOutlet, FooterComponent, PageRibbonComponent, HasAnyAuthorityDirective],
 })
 export default class MainComponent implements OnInit {
   constructor(

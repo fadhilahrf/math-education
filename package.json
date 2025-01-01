@@ -69,6 +69,8 @@
     "packaging": "jar"
   },
   "dependencies": {
+    "@angular/animations": "^17.0.6",
+    "@angular/cdk": "^19.0.4",
     "@angular/common": "17.0.6",
     "@angular/compiler": "17.0.6",
     "@angular/core": "17.0.6",
@@ -85,6 +87,10 @@
     "bootstrap": "5.3.2",
     "bootswatch": "5.3.2",
     "dayjs": "1.11.10",
+    "js-beautify": "^1.15.1",
+    "math-education": "file:",
+    "mathjax": "^3.2.2",
+    "ngx-editor": "^18.0.0",
     "ngx-infinite-scroll": "17.0.0",
     "rxjs": "7.8.1",
     "tslib": "2.6.2",

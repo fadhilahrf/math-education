@@ -1,0 +1,14 @@
+<h5 class="fw-bold">{{ lesson?.title }}</h5>
+<div class="row">
+    <div class="col-3 material-sidebar">
+        <ol>
+            <li *ngFor="let material of lesson!.materials" class="material-item" [ngClass]="materialSlug==material.slug ? 'active' : ''"(click)="setMaterialSlug(material.slug!)">
+                {{ material.title! }}
+            </li>
+        </ol>
+    </div>
+    <div class="ms-4 col-8">
+        <h5 class="fw-bold">{{ currentMaterial?.title }}</h5>
+        <div #mathContent>
+    </div>
+</div>

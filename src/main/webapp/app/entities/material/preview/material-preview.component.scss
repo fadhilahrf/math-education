@@ -1,0 +1,9 @@
+@import 'bootswatch/dist/zephyr/variables';
+
+.material-sidebar {
+    background: $warning;
+    color: $info;
+    padding: 10px;
+    border-radius: 5px;
+    height: 100px;
+} 

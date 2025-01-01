@@ -1,0 +1,134 @@
+@switch (mode) {
+  @case (modeType.latexEditor) {
+    <latex-editor (contentEmitter)="saveContent($event)" [content]="editForm.get('content')?.value"></latex-editor>
+  }
+  @case (modeType.preview) {
+    <material-preview [material]="material"></material-preview>
+  }
+  @default {
+    <div class="d-flex justify-content-center">
+      <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+          <h2 id="jhi-material-heading" data-cy="MaterialCreateUpdateHeading">Create or edit a Material</h2>
+    
+          <div>
+            <jhi-alert-error></jhi-alert-error>
+    
+            @if (editForm.controls.id.value !== null) {
+              <div class="mb-3">
+                <label class="form-label" for="field_id">ID</label>
+                <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+              </div>
+            }
+    
+            <div class="mb-3">
+              <label class="form-label" for="field_title">Title</label>
+              <input type="text" class="form-control" name="title" id="field_title" data-cy="title" formControlName="title" />
+              @if (editForm.get('title')!.invalid && (editForm.get('title')!.dirty || editForm.get('title')!.touched)) {
+                <div>
+                  @if (editForm.get('title')?.errors?.required) {
+                    <small class="form-text text-danger">This field is required.</small>
+                  }
+                </div>
+              }
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label" for="field_description">Description</label>
+              <input
+                type="text"
+                class="form-control"
+                name="description"
+                id="field_description"
+                data-cy="description"
+                formControlName="description"
+              />
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label" for="field_content">Content</label>
+              <textarea
+                id="field_content"
+                class="form-control" 
+                name="content"  
+                data-cy="content" 
+                formControlName="content"
+                rows="5"
+                cols="50"
+                placeholder="Type something here..."
+              ></textarea>
+    
+              @if (editForm.get('content')!.invalid && (editForm.get('content')!.dirty || editForm.get('content')!.touched)) {
+                <div>
+                  @if (editForm.get('content')?.errors?.required) {
+                    <small class="form-text text-danger">This field is required.</small>
+                  }
+                </div>
+              }
+  
+              <button type="button" class="btn btn-outline-primary my-2" (click)="switchMode(modeType.latexEditor)">Edit content</button>
+              <button type="button" class="btn btn-outline-success my-2" (click)="switchMode(modeType.preview)"><fa-icon icon="eye"></fa-icon> Preview</button>
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label" for="field_slug">Slug</label>
+              <input type="text" class="form-control" name="slug" id="field_slug" data-cy="slug" formControlName="slug" />
+              @if (editForm.get('slug')!.invalid && (editForm.get('slug')!.dirty || editForm.get('slug')!.touched)) {
+                <div>
+                  @if (editForm.get('slug')?.errors?.required) {
+                    <small class="form-text text-danger">This field is required.</small>
+                  }
+                </div>
+              }
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label" for="field_orderIndex">Order Index</label>
+              <input
+                type="number"
+                class="form-control"
+                name="orderIndex"
+                id="field_orderIndex"
+                data-cy="orderIndex"
+                formControlName="orderIndex"
+              />
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label" for="field_lesson">Lesson</label>
+              <select
+                class="form-control"
+                id="field_lesson"
+                data-cy="lesson"
+                name="lesson"
+                formControlName="lesson"
+                [compareWith]="compareLesson"
+              >
+                <option [ngValue]="null"></option>
+                @for (lessonOption of lessonsSharedCollection; track $index) {
+                  <option [ngValue]="lessonOption">{{ lessonOption.title }}</option>
+                }
+              </select>
+            </div>
+          </div>
+    
+          <div>
+            <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+              <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+            </button>
+    
+            <button
+              type="submit"
+              id="save-entity"
+              data-cy="entityCreateSaveButton"
+              [disabled]="editForm.invalid || isSaving"
+              class="btn btn-primary"
+            >
+              <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+}

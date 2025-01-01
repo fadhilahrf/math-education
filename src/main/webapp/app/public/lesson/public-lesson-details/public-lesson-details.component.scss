@@ -1,0 +1,22 @@
+@import 'bootswatch/dist/zephyr/variables';
+
+.material-sidebar {
+    background: $warning;
+    color: $info;
+    padding: 10px;
+    border-radius: 5px;
+    height: fit-content;
+} 
+
+.material-item:hover {
+    cursor: pointer;
+    color: black;
+}
+
+.material-item {
+    margin: 0px 5px 5px 0px;
+
+    &.active {
+        color: black;
+    }
+}

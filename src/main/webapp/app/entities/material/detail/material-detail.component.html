@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (material) {
+      <div>
+        <h2 data-cy="materialDetailsHeading"><span>Material</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ material.id }}</span>
+          </dd>
+          <dt><span>Title</span></dt>
+          <dd>
+            <span>{{ material.title }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ material.description }}</span>
+          </dd>
+          <dt><span>Content</span></dt>
+          <dd>
+            <span>{{ material.content }}</span>
+          </dd>
+          <dt><span>Slug</span></dt>
+          <dd>
+            <span>{{ material.slug }}</span>
+          </dd>
+          <dt><span>Order Index</span></dt>
+          <dd>
+            <span>{{ material.orderIndex }}</span>
+          </dd>
+          <dt><span>Lesson</span></dt>
+          <dd>
+            @if (material.lesson) {
+              <div>
+                <a [routerLink]="['/lesson', material.lesson.id, 'view']">{{ material.lesson.title }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/material', material.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
