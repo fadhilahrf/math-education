@@ -1,10 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpResponse, provideHttpClient } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { of, Subject, from } from 'rxjs';
+import { Subject, from, of } from 'rxjs';
 
 import { ILesson } from 'app/entities/lesson/lesson.model';
 import { LessonService } from 'app/entities/lesson/service/lesson.service';
@@ -24,8 +22,9 @@ describe('Material Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), MaterialUpdateComponent],
+      imports: [MaterialUpdateComponent],
       providers: [
+        provideHttpClient(),
         FormBuilder,
         {
           provide: ActivatedRoute,
@@ -49,11 +48,11 @@ describe('Material Management Update Component', () => {
 
   describe('ngOnInit', () => {
     it('Should call Lesson query and add missing value', () => {
-      const material: IMaterial = { id: 456 };
-      const lesson: ILesson = { id: 17081 };
+      const material: IMaterial = { id: 3829 };
+      const lesson: ILesson = { id: 5747 };
       material.lesson = lesson;
 
-      const lessonCollection: ILesson[] = [{ id: 32703 }];
+      const lessonCollection: ILesson[] = [{ id: 5747 }];
       jest.spyOn(lessonService, 'query').mockReturnValue(of(new HttpResponse({ body: lessonCollection })));
       const additionalLessons = [lesson];
       const expectedCollection: ILesson[] = [...additionalLessons, ...lessonCollection];
@@ -71,11 +70,11 @@ describe('Material Management Update Component', () => {
     });
 
     it('Should call Material query and add missing value', () => {
-      const material: IMaterial = { id: 456 };
-      const parent: IMaterial = { id: 15761 };
+      const material: IMaterial = { id: 3829 };
+      const parent: IMaterial = { id: 10021 };
       material.parent = parent;
 
-      const materialCollection: IMaterial[] = [{ id: 8633 }];
+      const materialCollection: IMaterial[] = [{ id: 10021 }];
       jest.spyOn(materialService, 'query').mockReturnValue(of(new HttpResponse({ body: materialCollection })));
       const additionalMaterials = [parent];
       const expectedCollection: IMaterial[] = [...additionalMaterials, ...materialCollection];
@@ -93,17 +92,17 @@ describe('Material Management Update Component', () => {
     });
 
     it('Should update editForm', () => {
-      const material: IMaterial = { id: 456 };
-      const lesson: ILesson = { id: 25528 };
+      const material: IMaterial = { id: 3829 };
+      const lesson: ILesson = { id: 5747 };
       material.lesson = lesson;
-      const parent: IMaterial = { id: 1479 };
+      const parent: IMaterial = { id: 10021 };
       material.parent = parent;
 
       activatedRoute.data = of({ material });
       comp.ngOnInit();
 
-      expect(comp.lessonsSharedCollection).toContain(lesson);
-      expect(comp.materialsSharedCollection).toContain(parent);
+      expect(comp.lessonsSharedCollection).toContainEqual(lesson);
+      expect(comp.materialsSharedCollection).toContainEqual(parent);
       expect(comp.material).toEqual(material);
     });
   });
@@ -112,7 +111,7 @@ describe('Material Management Update Component', () => {
     it('Should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IMaterial>>();
-      const material = { id: 123 };
+      const material = { id: 10021 };
       jest.spyOn(materialFormService, 'getMaterial').mockReturnValue(material);
       jest.spyOn(materialService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -135,7 +134,7 @@ describe('Material Management Update Component', () => {
     it('Should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IMaterial>>();
-      const material = { id: 123 };
+      const material = { id: 10021 };
       jest.spyOn(materialFormService, 'getMaterial').mockReturnValue({ id: null });
       jest.spyOn(materialService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -158,7 +157,7 @@ describe('Material Management Update Component', () => {
     it('Should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IMaterial>>();
-      const material = { id: 123 };
+      const material = { id: 10021 };
       jest.spyOn(materialService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ material });
@@ -179,8 +178,8 @@ describe('Material Management Update Component', () => {
   describe('Compare relationships', () => {
     describe('compareLesson', () => {
       it('Should forward to lessonService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: 5747 };
+        const entity2 = { id: 25298 };
         jest.spyOn(lessonService, 'compareLesson');
         comp.compareLesson(entity, entity2);
         expect(lessonService.compareLesson).toHaveBeenCalledWith(entity, entity2);
@@ -189,8 +188,8 @@ describe('Material Management Update Component', () => {
 
     describe('compareMaterial', () => {
       it('Should forward to materialService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+        const entity = { id: 10021 };
+        const entity2 = { id: 3829 };
         jest.spyOn(materialService, 'compareMaterial');
         comp.compareMaterial(entity, entity2);
         expect(materialService.compareMaterial).toHaveBeenCalledWith(entity, entity2);

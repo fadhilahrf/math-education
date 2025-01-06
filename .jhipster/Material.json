@@ -16,8 +16,7 @@
     },
     {
       "fieldName": "content",
-      "fieldType": "String",
-      "fieldValidateRules": ["required"]
+      "fieldType": "String"
     },
     {
       "fieldName": "slug",

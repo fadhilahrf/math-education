@@ -23,6 +23,8 @@ export class LessonUpdateComponent implements OnInit {
 
   editForm: LessonFormGroup = this.lessonFormService.createLessonFormGroup();
 
+  slugExists: boolean | null = null;
+
   constructor(
     protected lessonService: LessonService,
     protected lessonFormService: LessonFormService,
@@ -49,6 +51,27 @@ export class LessonUpdateComponent implements OnInit {
       this.subscribeToSaveResponse(this.lessonService.update(lesson));
     } else {
       this.subscribeToSaveResponse(this.lessonService.create(lesson));
+    }
+  }
+
+  generateSlug(): void {
+    if (this.editForm.get('title')?.valid) {
+      this.lessonService.generateSlug(this.editForm.get('title')?.value!).subscribe(res=>{
+        if (res.body) {
+          this.editForm.patchValue({ slug: res.body });
+        }
+      })
+    }
+  }
+
+  checkSlugExistence(): void {
+    if (this.editForm.get('slug')?.valid) {
+      this.lessonService.slugExists(this.editForm.get('slug')?.value!).subscribe(res=>{
+        if (res.body!=null) {
+          this.slugExists = res.body;
+          console.log(this.editForm.get('slug')?.value! + ' : ' + this.slugExists)
+        }
+      })
     }
   }
 

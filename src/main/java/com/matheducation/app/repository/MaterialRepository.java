@@ -14,9 +14,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MaterialRepository extends JpaRepository<Material, Long> {
-    
+
     Optional<Material> findOneBySlug(String slug);
 
+    Boolean existsBySlug(String slug);
+    
     default Optional<Material> findOneWithEagerRelationships(Long id) {
         return this.findOneWithToOneRelationships(id);
     }
@@ -30,14 +32,14 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
     }
 
     @Query(
-        value = "select material from Material material left join fetch material.lesson",
+        value = "select material from Material material left join fetch material.lesson left join fetch material.parent",
         countQuery = "select count(material) from Material material"
     )
     Page<Material> findAllWithToOneRelationships(Pageable pageable);
 
-    @Query("select material from Material material left join fetch material.lesson")
+    @Query("select material from Material material left join fetch material.lesson left join fetch material.parent")
     List<Material> findAllWithToOneRelationships();
 
-    @Query("select material from Material material left join fetch material.lesson where material.id =:id")
+    @Query("select material from Material material left join fetch material.lesson left join fetch material.parent where material.id =:id")
     Optional<Material> findOneWithToOneRelationships(@Param("id") Long id);
 }

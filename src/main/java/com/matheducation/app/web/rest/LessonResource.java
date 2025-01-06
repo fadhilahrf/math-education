@@ -179,4 +179,24 @@ public class LessonResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @PostMapping("/generate-slug")
+    public ResponseEntity<String> createLesson(@RequestBody String text) throws URISyntaxException {
+        log.debug("REST request to generate slug : {}", text);
+        if (text.isBlank()) {
+            throw new BadRequestAlertException("Text cannot be blank", ENTITY_NAME, "textblank");
+        }
+        String slug = lessonService.generateSlug(text);
+
+        return ResponseEntity.ok(slug);
+    }
+
+    @GetMapping("/check-slug-existence")
+    public ResponseEntity<Boolean> slugExists(@RequestParam(name = "slug", required = true) String slug) throws URISyntaxException {
+        log.debug("REST request to check slug existence : {}", slug);
+        
+        Boolean result = lessonService.slugExists(slug);
+
+        return ResponseEntity.ok(result);
+    }
 }

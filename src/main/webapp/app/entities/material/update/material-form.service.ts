@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { IMaterial, NewMaterial } from '../material.model';
 
@@ -24,6 +24,7 @@ type MaterialFormGroupContent = {
   slug: FormControl<IMaterial['slug']>;
   orderIndex: FormControl<IMaterial['orderIndex']>;
   lesson: FormControl<IMaterial['lesson']>;
+  parent: FormControl<IMaterial['parent']>;
 };
 
 export type MaterialFormGroup = FormGroup<MaterialFormGroupContent>;
@@ -47,14 +48,13 @@ export class MaterialFormService {
         validators: [Validators.required],
       }),
       description: new FormControl(materialRawValue.description),
-      content: new FormControl(materialRawValue.content, {
-        validators: [Validators.required],
-      }),
+      content: new FormControl(materialRawValue.content),
       slug: new FormControl(materialRawValue.slug, {
         validators: [Validators.required],
       }),
       orderIndex: new FormControl(materialRawValue.orderIndex),
-      lesson: new FormControl(materialRawValue.lesson)
+      lesson: new FormControl(materialRawValue.lesson),
+      parent: new FormControl(materialRawValue.parent),
     });
   }
 

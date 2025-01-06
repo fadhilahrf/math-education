@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithRequiredData, sampleWithNewData } from '../material.test-samples';
+import { sampleWithNewData, sampleWithRequiredData } from '../material.test-samples';
 
 import { MaterialFormService } from './material-form.service';
 

@@ -83,6 +83,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="parent.title">
+              <div class="d-flex">
+                <span>Parent</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -101,6 +107,13 @@
                 @if (material.lesson) {
                   <div>
                     <a [routerLink]="['/lesson', material.lesson.id, 'view']">{{ material.lesson.title }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (material.parent) {
+                  <div>
+                    <a [routerLink]="['/material', material.parent.id, 'view']">{{ material.parent.title }}</a>
                   </div>
                 }
               </td>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -9,9 +9,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ILesson } from 'app/entities/lesson/lesson.model';
 import { LessonService } from 'app/entities/lesson/service/lesson.service';
-import { IMaterial } from '../material.model';
+import { IMaterial, NewMaterial } from '../material.model';
 import { MaterialService } from '../service/material.service';
-import { MaterialFormService, MaterialFormGroup } from './material-form.service';
+import { MaterialFormGroup, MaterialFormService } from './material-form.service';
 import { LatexEditorComponent } from 'app/shared/latex-editor/latex-editor.component';
 import { MaterialPreviewComponent } from '../preview/material-preview.component';
 
@@ -23,12 +23,10 @@ import { MaterialPreviewComponent } from '../preview/material-preview.component'
 })
 export class MaterialUpdateComponent implements OnInit {
   isSaving = false;
-  material: IMaterial | null = null;
+  material: IMaterial | NewMaterial | null = null;
 
   lessonsSharedCollection: ILesson[] = [];
   materialsSharedCollection: IMaterial[] = [];
-
-  editForm: MaterialFormGroup = this.materialFormService.createMaterialFormGroup();
 
   mode = ''
 
@@ -38,13 +36,16 @@ export class MaterialUpdateComponent implements OnInit {
     preview: 'preview'
   }
 
-  constructor(
-    protected materialService: MaterialService,
-    protected materialFormService: MaterialFormService,
-    protected lessonService: LessonService,
-    protected activatedRoute: ActivatedRoute,
-     protected router: Router
-  ) {}
+  slugExists: boolean | null = null;
+
+  protected materialService = inject(MaterialService);
+  protected materialFormService = inject(MaterialFormService);
+  protected lessonService = inject(LessonService);
+  protected activatedRoute = inject(ActivatedRoute);
+  protected router = inject(Router);
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  editForm: MaterialFormGroup = this.materialFormService.createMaterialFormGroup();
 
   compareLesson = (o1: ILesson | null, o2: ILesson | null): boolean => this.lessonService.compareLesson(o1, o2);
 
@@ -85,6 +86,11 @@ export class MaterialUpdateComponent implements OnInit {
 
   saveContent(content: string): void {
     this.editForm.patchValue({ content });
+    this.convertFormToMaterial();
+  }
+
+  convertFormToMaterial(): void {
+    this.material = this.materialFormService.getMaterial(this.editForm);
   }
 
   switchMode(mode: string) : void {
@@ -92,6 +98,27 @@ export class MaterialUpdateComponent implements OnInit {
       queryParams: { mode },
       queryParamsHandling: 'merge'
     });
+  }
+
+  generateSlug(): void {
+    if (this.editForm.get('title')?.valid) {
+      this.materialService.generateSlug(this.editForm.get('title')?.value!).subscribe(res=>{
+        if (res.body) {
+          this.editForm.patchValue({ slug: res.body });
+        }
+      })
+    }
+  }
+
+  checkSlugExistence(): void {
+    if (this.editForm.get('slug')?.valid) {
+      this.materialService.slugExists(this.editForm.get('slug')?.value!).subscribe(res=>{
+        if (res.body!=null) {
+          this.slugExists = res.body;
+          console.log(this.editForm.get('slug')?.value! + ' : ' + this.slugExists)
+        }
+      })
+    }
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IMaterial>>): void {
@@ -121,6 +148,10 @@ export class MaterialUpdateComponent implements OnInit {
       this.lessonsSharedCollection,
       material.lesson,
     );
+    this.materialsSharedCollection = this.materialService.addMaterialToCollectionIfMissing<IMaterial>(
+      this.materialsSharedCollection,
+      material.parent,
+    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -129,5 +160,13 @@ export class MaterialUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<ILesson[]>) => res.body ?? []))
       .pipe(map((lessons: ILesson[]) => this.lessonService.addLessonToCollectionIfMissing<ILesson>(lessons, this.material?.lesson)))
       .subscribe((lessons: ILesson[]) => (this.lessonsSharedCollection = lessons));
+
+    this.materialService
+      .query()
+      .pipe(map((res: HttpResponse<IMaterial[]>) => res.body ?? []))
+      .pipe(
+        map((materials: IMaterial[]) => this.materialService.addMaterialToCollectionIfMissing<IMaterial>(materials, this.material?.parent)),
+      )
+      .subscribe((materials: IMaterial[]) => (this.materialsSharedCollection = materials.filter(material=>material.id!=this.material?.id)));
   }
 }

@@ -1,33 +1,33 @@
 import { IMaterial, NewMaterial } from './material.model';
 
 export const sampleWithRequiredData: IMaterial = {
-  id: 26769,
-  title: 'furiously season incidentally',
-  content: 'cameo until black',
-  slug: 'pass',
+  id: 28810,
+  title: 'ew',
+  content: 'part but',
+  slug: 'pfft',
 };
 
 export const sampleWithPartialData: IMaterial = {
-  id: 511,
-  title: 'vigilant finally',
-  description: 'about clamp hence',
-  content: 'whispered periodic ack',
-  slug: 'meanwhile rigid',
+  id: 27555,
+  title: 'jubilantly miserly minus',
+  content: 'omelet far dual',
+  slug: 'willfully',
+  orderIndex: 31954,
 };
 
 export const sampleWithFullData: IMaterial = {
-  id: 2403,
-  title: 'gee erase',
-  description: 'aw',
-  content: 'officially',
-  slug: 'whoever figure swell',
-  orderIndex: 5712,
+  id: 24846,
+  title: 'ready whether',
+  description: 'sequester before neat',
+  content: 'boo unlike atrium',
+  slug: 'commercial valentine',
+  orderIndex: 20492,
 };
 
 export const sampleWithNewData: NewMaterial = {
-  title: 'fast',
-  content: 'finally boohoo explanation',
-  slug: 'circa',
+  title: 'begonia which shore',
+  content: 'internalize against dead',
+  slug: 'gosh anxiously slowly',
   id: null,
 };
 

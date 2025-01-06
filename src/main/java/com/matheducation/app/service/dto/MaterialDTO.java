@@ -17,7 +17,6 @@ public class MaterialDTO implements Serializable {
 
     private String description;
 
-    @NotNull
     private String content;
 
     @NotNull
@@ -26,6 +25,8 @@ public class MaterialDTO implements Serializable {
     private Integer orderIndex;
 
     private LessonDTO lesson;
+
+    private MaterialDTO parent;
 
     public Long getId() {
         return id;
@@ -83,6 +84,14 @@ public class MaterialDTO implements Serializable {
         this.lesson = lesson;
     }
 
+    public MaterialDTO getParent() {
+        return parent;
+    }
+
+    public void setParent(MaterialDTO parent) {
+        this.parent = parent;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -115,6 +124,7 @@ public class MaterialDTO implements Serializable {
             ", slug='" + getSlug() + "'" +
             ", orderIndex=" + getOrderIndex() +
             ", lesson=" + getLesson() +
+            ", parent=" + getParent() +
             "}";
     }
 }

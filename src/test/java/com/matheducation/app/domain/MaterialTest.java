@@ -2,9 +2,12 @@ package com.matheducation.app.domain;
 
 import static com.matheducation.app.domain.LessonTestSamples.*;
 import static com.matheducation.app.domain.MaterialTestSamples.*;
+import static com.matheducation.app.domain.MaterialTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.matheducation.app.web.rest.TestUtil;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class MaterialTest {
@@ -24,7 +27,7 @@ class MaterialTest {
     }
 
     @Test
-    void lessonTest() throws Exception {
+    void lessonTest() {
         Material material = getMaterialRandomSampleGenerator();
         Lesson lessonBack = getLessonRandomSampleGenerator();
 
@@ -33,5 +36,39 @@ class MaterialTest {
 
         material.lesson(null);
         assertThat(material.getLesson()).isNull();
+    }
+
+    @Test
+    void parentTest() {
+        Material material = getMaterialRandomSampleGenerator();
+        Material materialBack = getMaterialRandomSampleGenerator();
+
+        material.setParent(materialBack);
+        assertThat(material.getParent()).isEqualTo(materialBack);
+
+        material.parent(null);
+        assertThat(material.getParent()).isNull();
+    }
+
+    @Test
+    void childrenTest() {
+        Material material = getMaterialRandomSampleGenerator();
+        Material materialBack = getMaterialRandomSampleGenerator();
+
+        material.addChildren(materialBack);
+        assertThat(material.getChildren()).containsOnly(materialBack);
+        assertThat(materialBack.getParent()).isEqualTo(material);
+
+        material.removeChildren(materialBack);
+        assertThat(material.getChildren()).doesNotContain(materialBack);
+        assertThat(materialBack.getParent()).isNull();
+
+        material.children(new HashSet<>(Set.of(materialBack)));
+        assertThat(material.getChildren()).containsOnly(materialBack);
+        assertThat(materialBack.getParent()).isEqualTo(material);
+
+        material.setChildren(new HashSet<>());
+        assertThat(material.getChildren()).doesNotContain(materialBack);
+        assertThat(materialBack.getParent()).isNull();
     }
 }

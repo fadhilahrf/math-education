@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { isPresent } from 'app/core/util/operators';
@@ -23,6 +23,14 @@ export class LessonService {
 
   create(lesson: NewLesson): Observable<EntityResponseType> {
     return this.http.post<ILesson>(this.resourceUrl, lesson, { observe: 'response' });
+  }
+
+  generateSlug(text: string): Observable<HttpResponse<string>> {
+    return this.http.post(`${this.resourceUrl}/generate-slug`, text, { observe: 'response',  responseType:'text' });
+  }
+
+  slugExists(slug: string): Observable<HttpResponse<boolean>> {
+    return this.http.get<boolean>(`${this.resourceUrl}/check-slug-existence?slug=${slug}`, { observe: 'response' });
   }
 
   update(lesson: ILesson): Observable<EntityResponseType> {

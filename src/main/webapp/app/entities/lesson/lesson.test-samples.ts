@@ -1,30 +1,29 @@
 import { ILesson, NewLesson } from './lesson.model';
 
 export const sampleWithRequiredData: ILesson = {
-  id: 1196,
-  title: 'beech tog actuate',
-  slug: 'registration beneath',
+  id: 5184,
+  title: 'definite',
+  slug: 'developmental triumphantly',
 };
 
 export const sampleWithPartialData: ILesson = {
-  id: 28404,
-  title: 'after',
-  slug: 'pfft spectacular',
-  description: 'boycott while',
-  level: 32423,
+  id: 7044,
+  title: 'discrete',
+  slug: 'small phooey',
+  level: 11224,
 };
 
 export const sampleWithFullData: ILesson = {
-  id: 3994,
-  title: 'yippee reinvest unlike',
-  slug: 'brr',
-  description: 'unusual so',
-  level: 1195,
+  id: 29198,
+  title: 'circa stealthily',
+  slug: 'engage any',
+  description: 'closely uh-huh wherever',
+  level: 13625,
 };
 
 export const sampleWithNewData: NewLesson = {
-  title: 'twig ambiguity',
-  slug: 'and',
+  title: 'fold even',
+  slug: 'provided',
   id: null,
 };
 

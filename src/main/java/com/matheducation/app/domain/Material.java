@@ -3,6 +3,8 @@ package com.matheducation.app.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Material.
@@ -27,7 +29,6 @@ public class Material extends AbstractAuditingEntity<Long> {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "content", nullable = false)
     private String content;
 
@@ -41,6 +42,14 @@ public class Material extends AbstractAuditingEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "materials" }, allowSetters = true)
     private Lesson lesson;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "lesson", "parent", "children" }, allowSetters = true)
+    private Material parent;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    @JsonIgnoreProperties(value = { "lesson", "parent", "children" }, allowSetters = true)
+    private Set<Material> children = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -132,6 +141,50 @@ public class Material extends AbstractAuditingEntity<Long> {
 
     public Material lesson(Lesson lesson) {
         this.setLesson(lesson);
+        return this;
+    }
+
+    public Material getParent() {
+        return this.parent;
+    }
+
+    public void setParent(Material material) {
+        this.parent = material;
+    }
+
+    public Material parent(Material material) {
+        this.setParent(material);
+        return this;
+    }
+
+    public Set<Material> getChildren() {
+        return this.children;
+    }
+
+    public void setChildren(Set<Material> materials) {
+        if (this.children != null) {
+            this.children.forEach(i -> i.setParent(null));
+        }
+        if (materials != null) {
+            materials.forEach(i -> i.setParent(this));
+        }
+        this.children = materials;
+    }
+
+    public Material children(Set<Material> materials) {
+        this.setChildren(materials);
+        return this;
+    }
+
+    public Material addChildren(Material material) {
+        this.children.add(material);
+        material.setParent(this);
+        return this;
+    }
+
+    public Material removeChildren(Material material) {
+        this.children.remove(material);
+        material.setParent(null);
         return this;
     }
 

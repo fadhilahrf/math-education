@@ -12,6 +12,7 @@ import org.mapstruct.*;
 @Mapper(componentModel = "spring")
 public interface MaterialMapper extends EntityMapper<MaterialDTO, Material> {
     @Mapping(target = "lesson", source = "lesson", qualifiedByName = "lessonTitle")
+    @Mapping(target = "parent", source = "parent", qualifiedByName = "materialTitle")
     MaterialDTO toDto(Material s);
 
     @Named("lessonTitle")
@@ -19,4 +20,10 @@ public interface MaterialMapper extends EntityMapper<MaterialDTO, Material> {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "title", source = "title")
     LessonDTO toDtoLessonTitle(Lesson lesson);
+
+    @Named("materialTitle")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "title", source = "title")
+    MaterialDTO toDtoMaterialTitle(Material material);
 }

@@ -3,6 +3,7 @@
     <latex-editor (contentEmitter)="saveContent($event)" [content]="editForm.get('content')?.value"></latex-editor>
   }
   @case (modeType.preview) {
+    {{ convertFormToMaterial() }}
     <material-preview [material]="material"></material-preview>
   }
   @default {
@@ -57,14 +58,6 @@
                 cols="50"
                 placeholder="Type something here..."
               ></textarea>
-    
-              @if (editForm.get('content')!.invalid && (editForm.get('content')!.dirty || editForm.get('content')!.touched)) {
-                <div>
-                  @if (editForm.get('content')?.errors?.required) {
-                    <small class="form-text text-danger">This field is required.</small>
-                  }
-                </div>
-              }
   
               <button type="button" class="btn btn-outline-primary my-2" (click)="switchMode(modeType.latexEditor)">Edit content</button>
               <button type="button" class="btn btn-outline-success my-2" (click)="switchMode(modeType.preview)"><fa-icon icon="eye"></fa-icon> Preview</button>
@@ -73,6 +66,15 @@
             <div class="mb-3">
               <label class="form-label" for="field_slug">Slug</label>
               <input type="text" class="form-control" name="slug" id="field_slug" data-cy="slug" formControlName="slug" />
+              <button type="button" class="btn btn-sm btn-dark my-2" (click)="generateSlug()" [disabled]="!editForm.get('title')?.valid"><fa-icon icon="gear"></fa-icon> Generate Slug</button>
+              <button type="button" class="btn btn-sm btn-primary my-2" (click)="checkSlugExistence()" [disabled]="!editForm.get('slug')?.valid"><fa-icon icon="check"></fa-icon> Check slug availability</button>
+              
+              @if (slugExists!=null && !slugExists) {
+                <small class="mx-2 text-success"><fa-icon icon="check-circle"></fa-icon> slug available</small>
+              } @else if (slugExists!=null && slugExists) {
+                <small class="mx-2 text-danger"><fa-icon icon="xmark-circle"></fa-icon> slug not available</small>
+              }
+
               @if (editForm.get('slug')!.invalid && (editForm.get('slug')!.dirty || editForm.get('slug')!.touched)) {
                 <div>
                   @if (editForm.get('slug')?.errors?.required) {
@@ -93,7 +95,7 @@
                 formControlName="orderIndex"
               />
             </div>
-    
+
             <div class="mb-3">
               <label class="form-label" for="field_lesson">Lesson</label>
               <select
@@ -107,6 +109,23 @@
                 <option [ngValue]="null"></option>
                 @for (lessonOption of lessonsSharedCollection; track $index) {
                   <option [ngValue]="lessonOption">{{ lessonOption.title }}</option>
+                }
+              </select>
+            </div>
+    
+            <div class="mb-3">
+              <label class="form-label" for="field_parent">Parent</label>
+              <select
+                class="form-control"
+                id="field_parent"
+                data-cy="parent"
+                name="parent"
+                formControlName="parent"
+                [compareWith]="compareMaterial"
+              >
+                <option [ngValue]="null"></option>
+                @for (materialOption of materialsSharedCollection; track $index) {
+                  <option [ngValue]="materialOption">{{ materialOption.title }}</option>
                 }
               </select>
             </div>

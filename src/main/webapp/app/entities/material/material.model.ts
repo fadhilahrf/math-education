@@ -8,6 +8,7 @@ export interface IMaterial {
   slug?: string | null;
   orderIndex?: number | null;
   lesson?: Pick<ILesson, 'id' | 'title'> | null;
+  parent?: Pick<IMaterial, 'id' | 'title'> | null;
 }
 
 export type NewMaterial = Omit<IMaterial, 'id'> & { id: null };

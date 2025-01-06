@@ -4,6 +4,8 @@ import com.matheducation.app.domain.Lesson;
 import com.matheducation.app.repository.LessonRepository;
 import com.matheducation.app.service.dto.LessonDTO;
 import com.matheducation.app.service.mapper.LessonMapper;
+import com.matheducation.app.utils.SlugifyUtils;
+
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +106,23 @@ public class LessonService {
     public Optional<LessonDTO> findOneBySlug(String slug) {
         log.debug("Request to get Lesson by Slug : {}", slug);
         return lessonRepository.findOneBySlug(slug).map(lessonMapper::toDto);
+    }
+
+    public String generateSlug(String text) {
+        String baseSlug = SlugifyUtils.slugify(text);
+        String uniqueSlug = baseSlug;
+        int counter = 1;
+
+        while (lessonRepository.existsBySlug(uniqueSlug)) {
+            uniqueSlug = baseSlug + '-' + counter;
+            counter++;
+        }
+
+        return uniqueSlug;
+    }
+
+    public Boolean slugExists(String slug) {
+        return lessonRepository.existsBySlug(slug);
     }
 
     /**

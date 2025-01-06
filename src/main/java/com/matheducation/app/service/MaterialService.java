@@ -4,6 +4,8 @@ import com.matheducation.app.domain.Material;
 import com.matheducation.app.repository.MaterialRepository;
 import com.matheducation.app.service.dto.MaterialDTO;
 import com.matheducation.app.service.mapper.MaterialMapper;
+import com.matheducation.app.utils.SlugifyUtils;
+
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,6 +115,23 @@ public class MaterialService {
     public Optional<MaterialDTO> findOneBySlug(String slug) {
         log.debug("Request to get Material by slug: {}", slug);
         return materialRepository.findOneBySlug(slug).map(materialMapper::toDto);
+    }
+
+    public String generateSlug(String text) {
+        String baseSlug = SlugifyUtils.slugify(text);
+        String uniqueSlug = baseSlug;
+        int counter = 1;
+
+        while (materialRepository.existsBySlug(uniqueSlug)) {
+            uniqueSlug = baseSlug + '-' + counter;
+            counter++;
+        }
+
+        return uniqueSlug;
+    }
+
+    public Boolean slugExists(String slug) {
+        return materialRepository.existsBySlug(slug);
     }
 
     /**

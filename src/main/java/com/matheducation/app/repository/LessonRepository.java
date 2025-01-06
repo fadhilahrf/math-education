@@ -16,4 +16,5 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     Optional<Lesson> findOneBySlug(String slug);
 
+    Boolean existsBySlug(String slug);
 }
