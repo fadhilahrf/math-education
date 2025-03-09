@@ -50,7 +50,6 @@ export class LatexEditorComponent implements OnDestroy {
   save(): void {
     this.contentEmitter.emit(this.content);
     this.toastService.show('Saved', 'Temporary saving is successfull.', 2000, 'text-dark' ,'bg-success text-light');
-
   }
 
   previousState(): void {

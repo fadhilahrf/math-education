@@ -1,8 +1,10 @@
 package com.matheducation.app.web.rest;
 
+import com.matheducation.app.domain.Material;
 import com.matheducation.app.repository.MaterialRepository;
 import com.matheducation.app.service.MaterialService;
 import com.matheducation.app.service.dto.MaterialDTO;
+import com.matheducation.app.specification.MaterialSpecification;
 import com.matheducation.app.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -147,14 +150,28 @@ public class MaterialResource {
     @GetMapping("")
     public ResponseEntity<List<MaterialDTO>> getAllMaterials(
         @org.springdoc.core.annotations.ParameterObject Pageable pageable,
-        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload
+        @RequestParam(name = "eagerload", required = false, defaultValue = "true") boolean eagerload,
+        @RequestParam(name = "field", required = false) String field,
+        @RequestParam(name = "search", required = false) String search
     ) {
         log.debug("REST request to get a page of Materials");
         Page<MaterialDTO> page;
+        Specification<Material> specification = Specification.where(null);
+
+        if (field!=null) {
+            if (field.equals("title")) {
+                specification = specification.and(MaterialSpecification.findByTitleContaining(search));
+            }else if (field.equals("description")) {
+                specification = specification.and(MaterialSpecification.findByDescriptionContaining(search));
+            }else if (field.equals("content")) {
+                specification = specification.and(MaterialSpecification.findByContentContaining(search));
+            }
+        }
+
         if (eagerload) {
-            page = materialService.findAllWithEagerRelationships(pageable);
+            page = materialService.findAllWithEagerRelationships(pageable, specification);
         } else {
-            page = materialService.findAll(pageable);
+            page = materialService.findAll(pageable, specification);
         }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());

@@ -5,7 +5,7 @@ import { ASC } from 'app/config/navigation.constants';
 import { LessonComponent } from './list/lesson.component';
 import { LessonDetailComponent } from './detail/lesson-detail.component';
 import { LessonUpdateComponent } from './update/lesson-update.component';
-import LessonResolve from './route/lesson-routing-resolve.service';
+import { duplicateLessonResolve, lessonResolve } from './route/lesson-routing-resolve.service';
 
 const lessonRoute: Routes = [
   {
@@ -20,7 +20,7 @@ const lessonRoute: Routes = [
     path: ':id/view',
     component: LessonDetailComponent,
     resolve: {
-      lesson: LessonResolve,
+      lesson: lessonResolve,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -28,7 +28,7 @@ const lessonRoute: Routes = [
     path: 'new',
     component: LessonUpdateComponent,
     resolve: {
-      lesson: LessonResolve,
+      lesson: lessonResolve,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -36,7 +36,15 @@ const lessonRoute: Routes = [
     path: ':id/edit',
     component: LessonUpdateComponent,
     resolve: {
-      lesson: LessonResolve,
+      lesson: lessonResolve,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':sourceId/duplicate',
+    component: LessonUpdateComponent,
+    resolve: {
+      lesson: duplicateLessonResolve,
     },
     canActivate: [UserRouteAccessService],
   },

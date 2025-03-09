@@ -4,7 +4,7 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { of, EMPTY, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
-import { ILesson } from '../lesson.model';
+import { ILesson, NewLesson } from '../lesson.model';
 import { LessonService } from '../service/lesson.service';
 
 export const lessonResolve = (route: ActivatedRouteSnapshot): Observable<null | ILesson> => {
@@ -26,4 +26,35 @@ export const lessonResolve = (route: ActivatedRouteSnapshot): Observable<null | 
   return of(null);
 };
 
-export default lessonResolve;
+export const duplicateLessonResolve = (route: ActivatedRouteSnapshot): Observable<null | NewLesson> => {
+  const sourceId = route.params['sourceId'];
+  const lessonService = inject(LessonService);
+
+  if (sourceId) {
+    return lessonService
+      .find(sourceId)
+      .pipe(
+        mergeMap((lesson: HttpResponse<ILesson>) => {
+          if (lesson.body) {
+            return lessonService
+              .generateSlug(lesson.body.title!)
+              .pipe(
+                mergeMap((slug: HttpResponse<string>) => {
+                  const duplicatedLesson: NewLesson = {
+                    ...lesson.body,
+                    id: null,
+                    slug: slug.body ?? lesson.body!.slug
+                  }
+
+                  return of(duplicatedLesson);
+                })
+              );
+          } else {
+            inject(Router).navigate(['404']);
+            return EMPTY;
+          }
+        }),
+      );
+  }
+  return of(null);
+};

@@ -33,8 +33,6 @@ export class LessonComponent implements OnInit, OnDestroy {
 
   render() {
     this.mathJaxService.getMathJaxLoadedPromise().then(() => {
-      console.log(this.html)
-
       this.paragraphElement.nativeElement.innerHTML = this.html;
 
       this.mathJaxService.renderMathInDiv(this.paragraphElement.nativeElement);

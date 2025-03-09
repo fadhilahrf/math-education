@@ -1,0 +1,14 @@
+<div class="input-group mb-3">
+    <div ngbDropdown class="d-inline-block">
+      <button class="btn btn-outline-secondary dropdown-toggle" ngbDropdownToggle>
+        <span [ngClass]="searchQuery.field ? 'fw-bold' : ''"> {{ !searchQuery.field ? FILTERED_BY : searchQuery.field }}</span>
+      </button>
+      <div ngbDropdownMenu>
+        <button ngbDropdownItem *ngFor="let option of searchOption" (click)="selectSearchOption(option)">
+          {{ option }}
+        </button>
+      </div>
+    </div>
+    <input type="text" class="form-control" aria-label="Text input with dropdown button" [(ngModel)]="searchQuery.search">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" (click)="search()"><fa-icon icon="search"></fa-icon></button>
+</div>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, switchMap, tap } from 'rxjs';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDropdown, NgbDropdownModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortDirective, SortByDirective } from 'app/shared/sort';
@@ -14,6 +14,8 @@ import { ASC, DESC, SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/conf
 import { IMaterial } from '../material.model';
 import { EntityArrayResponseType, MaterialService } from '../service/material.service';
 import { MaterialDeleteDialogComponent } from '../delete/material-delete-dialog.component';
+import { MaterialConstants } from 'app/entities/entity.constants';
+import { Query, SearchComponent } from 'app/shared/search/search.component';
 
 @Component({
   standalone: true,
@@ -25,9 +27,12 @@ import { MaterialDeleteDialogComponent } from '../delete/material-delete-dialog.
     SortDirective,
     SortByDirective,
     ItemCountComponent,
+    SearchComponent
   ],
 })
 export class MaterialComponent implements OnInit {
+  FILTERED_BY = 'filtered by';
+
   materials?: IMaterial[];
   isLoading = false;
 
@@ -37,6 +42,11 @@ export class MaterialComponent implements OnInit {
   itemsPerPage = ITEMS_PER_PAGE;
   totalItems = 0;
   page = 1;
+
+  FIELD_STRING = MaterialConstants.FIELD_STRING;
+
+  searchOption: string[] = [this.FIELD_STRING.TITLE, this.FIELD_STRING.DESCRIPTION, this.FIELD_STRING.CONTENT];
+  searchQuery: Query = {};
 
   constructor(
     protected materialService: MaterialService,
@@ -48,13 +58,22 @@ export class MaterialComponent implements OnInit {
   trackId = (_index: number, item: IMaterial): number => this.materialService.getMaterialIdentifier(item);
 
   ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['field']) {
+        this.searchQuery.field=params['field'];
+      } 
+
+      if (params['search']) {
+        this.searchQuery.search=params['search'];
+      } 
+    });
+
     this.load();
   }
 
   delete(material: IMaterial): void {
     const modalRef = this.modalService.open(MaterialDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.material = material;
-    // unsubscribe not needed because closed completes on modal close
     modalRef.closed
       .pipe(
         filter(reason => reason === ITEM_DELETED_EVENT),
@@ -83,11 +102,26 @@ export class MaterialComponent implements OnInit {
     this.handleNavigation(page, this.predicate, this.ascending);
   }
 
-  shortenContent(content: string): string {
-    if (content.length>100) {
-      content = content.substring(0, 100) + '...';
+  shortenContent(content: string | null): string {
+    if (content && content.length>30) {
+      content = content.substring(0, 30) + '...';
     }
-    return content;
+    return content ? content : '';
+  }
+
+  search(query: Query): void {
+    if (query && query.field && query.search) {
+      this.searchQuery = query;
+      this.router.navigate([], {
+        queryParams: { 
+          field : this.searchQuery.field,
+          search : this.searchQuery.search
+        },
+        queryParamsHandling: 'merge'
+      });
+    }
+
+    this.load();
   }
 
   protected loadFromBackendWithRouteInformations(): Observable<EntityArrayResponseType> {
@@ -122,12 +156,20 @@ export class MaterialComponent implements OnInit {
   protected queryBackend(page?: number, predicate?: string, ascending?: boolean): Observable<EntityArrayResponseType> {
     this.isLoading = true;
     const pageToLoad: number = page ?? 1;
-    const queryObject: any = {
+    let queryObject: any = {
       page: pageToLoad - 1,
       size: this.itemsPerPage,
-      eagerload: true,
-      sort: this.getSortQueryParam(predicate, ascending),
+      eagerload: false,
+      sort: this.getSortQueryParam(predicate, ascending)
     };
+
+    if (this.searchQuery) {
+      queryObject = {
+        ...queryObject, 
+        ...this.searchQuery
+      }
+    }
+    
     return this.materialService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
   }
 

@@ -5,7 +5,7 @@ import { ASC } from 'app/config/navigation.constants';
 import { MaterialComponent } from './list/material.component';
 import { MaterialDetailComponent } from './detail/material-detail.component';
 import { MaterialUpdateComponent } from './update/material-update.component';
-import MaterialResolve from './route/material-routing-resolve.service';
+import { materialResolve, duplicateMaterialResolve } from './route/material-routing-resolve.service';
 
 const materialRoute: Routes = [
   {
@@ -20,7 +20,7 @@ const materialRoute: Routes = [
     path: ':id/view',
     component: MaterialDetailComponent,
     resolve: {
-      material: MaterialResolve,
+      material: materialResolve,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -28,7 +28,7 @@ const materialRoute: Routes = [
     path: 'new',
     component: MaterialUpdateComponent,
     resolve: {
-      material: MaterialResolve,
+      material: materialResolve,
     },
     canActivate: [UserRouteAccessService],
   },
@@ -36,7 +36,15 @@ const materialRoute: Routes = [
     path: ':id/edit',
     component: MaterialUpdateComponent,
     resolve: {
-      material: MaterialResolve,
+      material: materialResolve,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: ':sourceId/duplicate',
+    component: MaterialUpdateComponent,
+    resolve: {
+      material: duplicateMaterialResolve,
     },
     canActivate: [UserRouteAccessService],
   },

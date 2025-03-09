@@ -15,6 +15,8 @@ import { ASC, DESC, SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/conf
 import { ILesson } from '../lesson.model';
 import { EntityArrayResponseType, LessonService } from '../service/lesson.service';
 import { LessonDeleteDialogComponent } from '../delete/lesson-delete-dialog.component';
+import { Query, SearchComponent } from 'app/shared/search/search.component';
+import { LessonConstants } from 'app/entities/entity.constants';
 
 @Component({
   standalone: true,
@@ -26,10 +28,8 @@ import { LessonDeleteDialogComponent } from '../delete/lesson-delete-dialog.comp
     SharedModule,
     SortDirective,
     SortByDirective,
-    DurationPipe,
-    FormatMediumDatetimePipe,
-    FormatMediumDatePipe,
     ItemCountComponent,
+    SearchComponent
   ],
 })
 export class LessonComponent implements OnInit {
@@ -43,6 +43,11 @@ export class LessonComponent implements OnInit {
   totalItems = 0;
   page = 1;
 
+    FIELD_STRING = LessonConstants.FIELD_STRING;
+
+  searchOption: string[] = [this.FIELD_STRING.TITLE, this.FIELD_STRING.DESCRIPTION];
+  searchQuery: Query = {};
+
   constructor(
     protected lessonService: LessonService,
     protected activatedRoute: ActivatedRoute,
@@ -53,6 +58,16 @@ export class LessonComponent implements OnInit {
   trackId = (_index: number, item: ILesson): number => this.lessonService.getLessonIdentifier(item);
 
   ngOnInit(): void {
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['field']) {
+        this.searchQuery.field=params['field'];
+      } 
+
+      if (params['search']) {
+        this.searchQuery.search=params['search'];
+      } 
+    });
+    
     this.load();
   }
 
@@ -88,6 +103,21 @@ export class LessonComponent implements OnInit {
     this.handleNavigation(page, this.predicate, this.ascending);
   }
 
+  search(query: Query): void {
+    if (query && query.field && query.search) {
+      this.searchQuery = query;
+      this.router.navigate([], {
+        queryParams: { 
+          field : this.searchQuery.field,
+          search : this.searchQuery.search
+        },
+        queryParamsHandling: 'merge'
+      });
+    }
+
+    this.load();
+  }
+
   protected loadFromBackendWithRouteInformations(): Observable<EntityArrayResponseType> {
     return combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data]).pipe(
       tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
@@ -119,12 +149,20 @@ export class LessonComponent implements OnInit {
 
   protected queryBackend(page?: number, predicate?: string, ascending?: boolean): Observable<EntityArrayResponseType> {
     this.isLoading = true;
-    const pageToLoad: number = page ?? 1;
-    const queryObject: any = {
+    const pageToLoad: number = page ?? 1  ;
+    let queryObject: any = {
       page: pageToLoad - 1,
       size: this.itemsPerPage,
       sort: this.getSortQueryParam(predicate, ascending),
     };
+
+    if (this.searchQuery) {
+      queryObject = {
+        ...queryObject, 
+        ...this.searchQuery
+      }
+    }
+
     return this.lessonService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
   }
 

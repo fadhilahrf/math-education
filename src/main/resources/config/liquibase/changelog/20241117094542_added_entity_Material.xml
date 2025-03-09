@@ -21,7 +21,7 @@
                 <constraints nullable="true" />
             </column>
             <column name="content" type="varchar(30000)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="slug" type="varchar(255)">
                 <constraints nullable="false" />
@@ -35,8 +35,7 @@
             <column name="parent_id" type="bigint">
                 <constraints nullable="true" />
             </column>
-            </column>
-                <column name="created_by" type="varchar(50)">
+            <column name="created_by" type="varchar(50)">
                 <constraints nullable="false"/>
             </column>
             <column name="created_date" type="timestamp"/>

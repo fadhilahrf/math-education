@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,6 +86,12 @@ public class MaterialService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
+    public Page<MaterialDTO> findAll(Pageable pageable, Specification<Material> specification) {
+        log.debug("Request to get all Materials");
+        return materialRepository.findAll(specification, pageable).map(materialMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
     public Page<MaterialDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Materials");
         return materialRepository.findAll(pageable).map(materialMapper::toDto);
@@ -97,6 +104,10 @@ public class MaterialService {
      */
     public Page<MaterialDTO> findAllWithEagerRelationships(Pageable pageable) {
         return materialRepository.findAllWithEagerRelationships(pageable).map(materialMapper::toDto);
+    }
+
+    public Page<MaterialDTO> findAllWithEagerRelationships(Pageable pageable, Specification<Material> specification) {
+        return materialRepository.findAll(specification, pageable).map(materialMapper::toDto);
     }
 
     /**

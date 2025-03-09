@@ -2,6 +2,10 @@
   <h2 id="page-heading" data-cy="LessonHeading">
     <span>Lessons</span>
 
+    <div class="col d-flex justify-content-start">
+      <search [searchOption]="searchOption" [searchQuery]="searchQuery" (searchEmitter)="search($event)"></search>
+    </div>
+
     <div class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
@@ -84,6 +88,10 @@
               <td>{{ lesson.description }}</td>
               <td>{{ lesson.level }}</td>
               <td class="text-end">
+                <a [routerLink]="['/lesson', lesson.id, 'duplicate']" class="btn btn-dark btn-sm" data-cy="entityDetailsButton">
+                  <fa-icon icon="clone"></fa-icon>
+                  <span class="d-none d-md-inline">Duplicate</span>
+                </a>
                 <div class="btn-group">
                   <a [routerLink]="['/lesson', lesson.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
                     <fa-icon icon="eye"></fa-icon>

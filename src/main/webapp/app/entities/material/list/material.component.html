@@ -1,8 +1,12 @@
 <div>
-  <h2 id="page-heading" data-cy="MaterialHeading">
+  <h2 id="page-heading" data-cy="MaterialHeading" class="row">
     <span>Materials</span>
 
-    <div class="d-flex justify-content-end">
+    <div class="col d-flex justify-content-start">
+      <search [searchOption]="searchOption" [searchQuery]="searchQuery" (searchEmitter)="search($event)"></search>
+    </div>
+  
+    <div class="col d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
         <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
         <span>Refresh list</span>
@@ -118,6 +122,10 @@
                 }
               </td>
               <td class="text-end">
+                <a [routerLink]="['/material', material.id, 'duplicate']" class="btn btn-dark btn-sm" data-cy="entityDetailsButton">
+                  <fa-icon icon="clone"></fa-icon>
+                  <span class="d-none d-md-inline">Duplicate</span>
+                </a>
                 <div class="btn-group">
                   <a [routerLink]="['/material', material.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
                     <fa-icon icon="eye"></fa-icon>
