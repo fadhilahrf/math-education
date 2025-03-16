@@ -6,7 +6,7 @@ export interface ILesson {
   slug?: string | null;
   description?: string | null;
   level?: number | null;
-  materials?: Pick<IMaterial, 'id' | 'title' | 'slug'>[] | null;
+  materials?: Pick<IMaterial, 'id' | 'title' | 'slug' | 'orderIndex' | 'parent' | 'children'>[] | null;
 }
 
 export type NewLesson = Omit<ILesson, 'id'> & { id: null };

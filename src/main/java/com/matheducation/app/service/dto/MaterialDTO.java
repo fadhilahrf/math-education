@@ -2,6 +2,8 @@ package com.matheducation.app.service.dto;
 
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,6 +29,8 @@ public class MaterialDTO implements Serializable {
     private LessonDTO lesson;
 
     private MaterialDTO parent;
+    
+    private List<MaterialDTO> children = new ArrayList<>() ;
 
     public Long getId() {
         return id;
@@ -90,6 +94,14 @@ public class MaterialDTO implements Serializable {
 
     public void setParent(MaterialDTO parent) {
         this.parent = parent;
+    }
+
+    public List<MaterialDTO> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MaterialDTO> children) {
+        this.children = children;
     }
 
     @Override

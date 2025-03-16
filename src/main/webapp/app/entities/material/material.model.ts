@@ -9,6 +9,7 @@ export interface IMaterial {
   orderIndex?: number | null;
   lesson?: Pick<ILesson, 'id' | 'title'> | null;
   parent?: Pick<IMaterial, 'id' | 'title'> | null;
+  children?: Pick<IMaterial, 'id' | 'title' | 'slug' | 'orderIndex'>[] | null;
 }
 
 export type NewMaterial = Omit<IMaterial, 'id'> & { id: null };

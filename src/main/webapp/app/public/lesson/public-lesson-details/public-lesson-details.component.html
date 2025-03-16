@@ -1,14 +1,21 @@
 <h5 class="fw-bold">{{ lesson?.title }}</h5>
 <div class="row">
-    <div class="col-3 material-sidebar">
-        <ol>
-            <li *ngFor="let material of lesson!.materials" class="material-item" [ngClass]="materialSlug==material.slug ? 'active' : ''"(click)="setMaterialSlug(material.slug!)">
-                {{ material.title! }}
-            </li>
-        </ol>
+    <div class="col-12 col-md-5 col-lg-3 material-sidebar">
+        <ul class="material-list">
+            <ng-container *ngFor="let material of lesson!.materials" >
+                <li class="material-item" [ngClass]="materialSlug==material.slug ? 'active' : ''"(click)="setMaterialSlug(material.slug!)">
+                    {{ material.orderIndex }}. {{ material.title }}
+                </li>
+                <ul class="material-list" *ngIf="material.children">
+                    <li class="material-item" *ngFor="let child of material.children" [ngClass]="materialSlug==child.slug ? 'active' : ''"(click)="setMaterialSlug(child.slug!)">
+                    {{ material.orderIndex }}.{{ child.orderIndex }}  {{ child.title }}
+                    </li>
+                </ul>
+            </ng-container>
+        </ul>
     </div>
-    <div class="ms-4 col-8">
-        <h5 class="fw-bold">{{ currentMaterial?.title }}</h5>
+    <div class="col-12 col-md-5 col-lg-9">
+        <h5 class="fw-bold text-muted">{{ currentMaterial?.title }}</h5>
         <div #mathContent>
     </div>
 </div>

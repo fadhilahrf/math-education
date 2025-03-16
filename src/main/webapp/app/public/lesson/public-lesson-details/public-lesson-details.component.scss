@@ -1,8 +1,8 @@
 @import 'bootswatch/dist/zephyr/variables';
 
 .material-sidebar {
-    background: $warning;
-    color: $info;
+    background: $primary;
+    color: rgba(255, 255, 255, 0.7);
     padding: 10px;
     border-radius: 5px;
     height: fit-content;
@@ -10,13 +10,20 @@
 
 .material-item:hover {
     cursor: pointer;
-    color: black;
+    color: $white;
+}
+
+.material-list {
+    margin: 0px;
+    padding-left: 1rem;
 }
 
 .material-item {
     margin: 0px 5px 5px 0px;
 
     &.active {
-        color: black;
+        color: $white;
     }
+
+    list-style: none;
 }

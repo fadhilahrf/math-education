@@ -3,11 +3,16 @@ package com.matheducation.app.service;
 import com.matheducation.app.domain.Lesson;
 import com.matheducation.app.repository.LessonRepository;
 import com.matheducation.app.service.dto.LessonDTO;
+import com.matheducation.app.service.dto.MaterialDTO;
 import com.matheducation.app.service.mapper.LessonMapper;
 import com.matheducation.app.utils.SlugifyUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -121,9 +126,31 @@ public class LessonService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<LessonDTO> findOneBySlug(String slug) {
+    public Optional<LessonDTO> findOneBySlug(String slug, Boolean isForMenuView) {
         log.debug("Request to get Lesson by Slug : {}", slug);
-        return lessonRepository.findOneBySlug(slug).map(lessonMapper::toDto);
+        return lessonRepository.findOneBySlug(slug).map(lesson->{
+            LessonDTO lessonDTO = lessonMapper.toDto(lesson);
+
+            if (isForMenuView) {
+                lessonDTO.getMaterials().stream().forEach(material->material.setContent(null));
+
+                List<MaterialDTO> materialParents = lessonDTO.getMaterials().stream().filter(material -> material.getParent()==null).collect(Collectors.toList());
+                materialParents.sort(Comparator.comparingInt(item->item.getOrderIndex()));
+                materialParents.stream().forEach(material -> {
+                    List<MaterialDTO> materialChildren = lessonDTO.getMaterials().stream().filter(child -> child.getParent()!=null && child.getParent().equals(material)).collect(Collectors.toList());
+                    materialChildren.stream().forEach(child-> { 
+                        child.setParent(null);
+                        child.setLesson(null);
+                    });
+                    materialChildren.sort(Comparator.comparingInt(item->item.getOrderIndex()));
+                    material.setChildren(materialChildren);
+                });
+                
+                lessonDTO.setMaterials(materialParents);
+            }
+            
+            return lessonDTO;
+        });
     }
 
     public String generateSlug(String text) {

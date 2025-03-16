@@ -11,7 +11,7 @@ export const publicLessonResolve = (route: ActivatedRouteSnapshot): Observable<n
     const slug = route.params['slug'];
     if (slug) {
       return inject(PublicLessonService)
-        .findBySlug(slug, false)
+        .findBySlug(slug, true)
         .pipe(
           mergeMap((lesson: HttpResponse<ILesson>) => {
             if (lesson.body) {

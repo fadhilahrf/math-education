@@ -25,8 +25,8 @@ export class PublicLessonService {
     return this.http.get<ILesson>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  findBySlug(slug: string, loadMaterialContent: boolean = true): Observable<EntityResponseType> {
-    return this.http.get<ILesson>(`${this.resourceUrl}/by-slug/${slug}?loadMaterialContent=${loadMaterialContent}`, { observe: 'response' });
+  findBySlug(slug: string, isForMaterialMenuView: boolean = false): Observable<EntityResponseType> {
+    return this.http.get<ILesson>(`${this.resourceUrl}/by-slug/${slug}?isForMaterialMenuView=${isForMaterialMenuView}`, { observe: 'response' });
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {

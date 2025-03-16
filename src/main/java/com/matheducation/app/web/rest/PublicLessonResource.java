@@ -67,14 +67,10 @@ public class PublicLessonResource {
     @GetMapping("/by-slug/{slug}")
     public ResponseEntity<LessonDTO> getLessonBySlug(
         @PathVariable("slug") String slug,
-        @RequestParam(name = "loadMaterialContent", required = false, defaultValue = "true") boolean loadMaterialContent
+        @RequestParam(name = "isForMaterialMenuView", required = false, defaultValue = "false") boolean isForMaterialMenuView
         ) {
         log.debug("REST request to get Lesson by Slug : {}", slug);
-        Optional<LessonDTO> lessonDTO = lessonService.findOneBySlug(slug);
-        
-        if (!loadMaterialContent) {
-            lessonDTO.get().getMaterials().stream().forEach(material->material.setContent(null));
-        }
+        Optional<LessonDTO> lessonDTO = lessonService.findOneBySlug(slug, isForMaterialMenuView);
 
         return ResponseUtil.wrapOrNotFound(lessonDTO);
     }
