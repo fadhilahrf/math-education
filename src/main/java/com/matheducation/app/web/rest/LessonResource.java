@@ -197,7 +197,7 @@ public class LessonResource {
     }
 
     @PostMapping("/generate-slug")
-    public ResponseEntity<String> createLesson(@RequestBody String text) throws URISyntaxException {
+    public ResponseEntity<String> generateSlug(@RequestBody String text) throws URISyntaxException {
         log.debug("REST request to generate slug : {}", text);
         if (text.isBlank()) {
             throw new BadRequestAlertException("Text cannot be blank", ENTITY_NAME, "textblank");
